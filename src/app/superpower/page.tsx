@@ -108,34 +108,97 @@ export default function SuperpowerPage() {
         stagger: 0.3,
       });
 
-      // ENHANCED: Pricing cards CONVERGENCE animation - cards come together
+      // ULTRA-ENHANCED: Pricing cards CONVERGENCE animation - magnetic scroll-controlled
       const premiumCards = gsap.utils.toArray<HTMLElement>(".premium-card");
+
+      // Layer 1: Enhanced Core Convergence with Magnetic Effect
       gsap.from(premiumCards, {
         scrollTrigger: {
           trigger: ".premium-section",
-          start: "top 75%",
-          end: "top 25%",
-          scrub: 1,
+          start: "top 90%",    // Extended range for more scroll control
+          end: "top 10%",      // User gets 80% viewport height to control
+          scrub: 0.5,          // Tighter scroll coupling (was 1)
+          pin: true,           // Pin section during convergence
+          anticipatePin: 1,    // Smooth pin transition
         },
         x: (i) => {
-          // Cards converge from edges toward center
-          if (i === 0) return -600; // Left card from far left
-          if (i === 2) return 600;  // Right card from far right
+          // Magnetic convergence from farther distances
+          if (i === 0) return -800; // Left card from far left (was -600)
+          if (i === 2) return 800;  // Right card from far right (was 600)
           return 0; // Center card drops from above
         },
-        y: (i) => (i === 1 ? -400 : 0), // Center card drops from top
-        opacity: 0,
+        y: (i) => (i === 1 ? -600 : 0), // Center drops from higher (was -400)
+        opacity: 0.2,        // Visible ghost images (was 0)
         rotationY: (i) => {
-          if (i === 0) return -90; // Left card rotates in
-          if (i === 2) return 90;  // Right card rotates in
+          // More dramatic 3D rotation
+          if (i === 0) return -120; // Left card rotates in (was -90)
+          if (i === 2) return 120;  // Right card rotates in (was 90)
           return 0;
         },
-        scale: 0.5,
+        scale: 0.3,          // Smaller initial state (was 0.5)
         stagger: {
           amount: 0.3,
-          from: "edges", // Stagger from edges toward center
+          from: "edges",     // Stagger from edges toward center
         },
-        ease: "cubic.out",
+        ease: "expo.inOut",  // Magnetic acceleration effect (was cubic.out)
+      });
+
+      // Layer 2: Blur effect - clears as cards converge (disabled on mobile)
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+      if (!isMobile) {
+        gsap.from(premiumCards, {
+          scrollTrigger: {
+            trigger: ".premium-section",
+            start: "top 90%",
+            end: "top 10%",
+            scrub: 0.5,
+          },
+          filter: "blur(30px)",
+          ease: "expo.inOut",
+        });
+      }
+
+      // Layer 3: Glow effect - peaks at convergence midpoint
+      premiumCards.forEach((card) => {
+        const glowTimeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: ".premium-section",
+            start: "top 90%",
+            end: "top 10%",
+            scrub: 0.5,
+          },
+        });
+
+        glowTimeline
+          .fromTo(
+            card,
+            {
+              boxShadow: "0 0 0px rgba(249, 115, 22, 0)",
+            },
+            {
+              boxShadow: "0 0 60px rgba(249, 115, 22, 0.6)",
+              duration: 0.5,
+              ease: "power2.in",
+            }
+          )
+          .to(card, {
+            boxShadow: "0 0 20px rgba(249, 115, 22, 0.3)",
+            duration: 0.5,
+            ease: "power2.out",
+          });
+      });
+
+      // Layer 4: Settle pop - satisfying snap at end
+      gsap.from(premiumCards, {
+        scrollTrigger: {
+          trigger: ".premium-section",
+          start: "top 15%",  // Near end of convergence
+          end: "top 10%",
+          scrub: 0.3,
+        },
+        scale: 1.02,
+        ease: "back.out(1.2)",
       });
 
       // Background gradient shift
@@ -553,7 +616,7 @@ export default function SuperpowerPage() {
               Choose Your Plan
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8" style={{ transformStyle: "preserve-3d" }}>
-              <div className="premium-card p-8 bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-3xl border border-gray-600/30 backdrop-blur-lg">
+              <div className="premium-card p-8 bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-3xl border border-gray-600/30 backdrop-blur-lg" style={{ willChange: "transform, opacity, filter" }}>
                 <h3 className="text-3xl font-bold mb-4">Essential</h3>
                 <p className="text-5xl font-bold mb-6 text-orange-500">$29/mo</p>
                 <ul className="space-y-3 text-gray-300">
@@ -601,7 +664,7 @@ export default function SuperpowerPage() {
                   </li>
                 </ul>
               </div>
-              <div className="premium-card p-8 bg-gradient-to-br from-orange-600/30 to-red-600/30 rounded-3xl border-2 border-orange-500 backdrop-blur-lg transform scale-105 shadow-2xl shadow-orange-500/20">
+              <div className="premium-card p-8 bg-gradient-to-br from-orange-600/30 to-red-600/30 rounded-3xl border-2 border-orange-500 backdrop-blur-lg transform scale-105 shadow-2xl shadow-orange-500/20" style={{ willChange: "transform, opacity, filter" }}>
                 <div className="bg-orange-500 text-black text-sm font-bold px-3 py-1 rounded-full inline-block mb-4">
                   MOST POPULAR
                 </div>
@@ -666,7 +729,7 @@ export default function SuperpowerPage() {
                   </li>
                 </ul>
               </div>
-              <div className="premium-card p-8 bg-gradient-to-br from-purple-800/50 to-blue-900/50 rounded-3xl border border-purple-600/30 backdrop-blur-lg">
+              <div className="premium-card p-8 bg-gradient-to-br from-purple-800/50 to-blue-900/50 rounded-3xl border border-purple-600/30 backdrop-blur-lg" style={{ willChange: "transform, opacity, filter" }}>
                 <h3 className="text-3xl font-bold mb-4">Enterprise</h3>
                 <p className="text-5xl font-bold mb-6 text-purple-500">Custom</p>
                 <ul className="space-y-3 text-gray-300">
