@@ -16,16 +16,16 @@ export default function SuperpowerPage() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Hero text fade in with scale
+      // Hero text fade in with scale - using cubicOut like superpower.com
       gsap.from(heroTextRef.current, {
         opacity: 0,
         scale: 0.8,
         y: 100,
         duration: 1.5,
-        ease: "power3.out",
+        ease: "cubic.out",
       });
 
-      // Parallax video effect
+      // Parallax video effect - scale transform like superpower.com (1.2)
       gsap.to(".hero-video", {
         scrollTrigger: {
           trigger: ".hero-section",
@@ -33,30 +33,31 @@ export default function SuperpowerPage() {
           end: "bottom top",
           scrub: 1.5,
         },
-        scale: 1.3,
-        y: 150,
+        scale: 1.2,
+        y: 100,
         ease: "none",
       });
 
-      // Feature cards stagger animation
+      // Feature cards stagger animation - earlier trigger
       gsap.from(".feature-card", {
         scrollTrigger: {
           trigger: ".features-section",
-          start: "top 70%",
-          end: "top 30%",
+          start: "top 75%",
+          end: "top 35%",
           scrub: 1,
         },
         y: 100,
         opacity: 0,
         stagger: 0.2,
+        ease: "cubic.out",
       });
 
-      // Stats counter animation
+      // Stats counter animation - FIXED: earlier trigger so fully visible in viewport
       gsap.to(counterRef.current, {
         scrollTrigger: {
           trigger: ".stats-section",
-          start: "top 60%",
-          end: "top 40%",
+          start: "top 85%",
+          end: "top 35%",
           onEnter: () => {
             let count = 0;
             const interval = setInterval(() => {
@@ -72,26 +73,28 @@ export default function SuperpowerPage() {
       gsap.from(".masked-video-container", {
         scrollTrigger: {
           trigger: ".video-section",
-          start: "top 70%",
-          end: "top 30%",
+          start: "top 75%",
+          end: "top 35%",
           scrub: 1,
         },
         scale: 0.5,
         opacity: 0,
         rotationY: -30,
+        ease: "cubic.out",
       });
 
-      // Text reveal animations
+      // Text reveal animations with earlier triggers
       gsap.utils.toArray<HTMLElement>(".reveal-text").forEach((text) => {
         gsap.from(text, {
           scrollTrigger: {
             trigger: text,
-            start: "top 80%",
-            end: "top 50%",
+            start: "top 85%",
+            end: "top 55%",
             scrub: 1,
           },
-          y: 80,
+          y: 60,
           opacity: 0,
+          ease: "cubic.out",
         });
       });
 
@@ -105,18 +108,34 @@ export default function SuperpowerPage() {
         stagger: 0.3,
       });
 
-      // Premium cards entrance
-      gsap.from(".premium-card", {
+      // ENHANCED: Pricing cards CONVERGENCE animation - cards come together
+      const premiumCards = gsap.utils.toArray<HTMLElement>(".premium-card");
+      gsap.from(premiumCards, {
         scrollTrigger: {
           trigger: ".premium-section",
-          start: "top 70%",
-          end: "top 40%",
+          start: "top 75%",
+          end: "top 25%",
           scrub: 1,
         },
-        x: (i) => (i % 2 === 0 ? -200 : 200),
+        x: (i) => {
+          // Cards converge from edges toward center
+          if (i === 0) return -600; // Left card from far left
+          if (i === 2) return 600;  // Right card from far right
+          return 0; // Center card drops from above
+        },
+        y: (i) => (i === 1 ? -400 : 0), // Center card drops from top
         opacity: 0,
-        rotation: (i) => (i % 2 === 0 ? -10 : 10),
-        stagger: 0.15,
+        rotationY: (i) => {
+          if (i === 0) return -90; // Left card rotates in
+          if (i === 2) return 90;  // Right card rotates in
+          return 0;
+        },
+        scale: 0.5,
+        stagger: {
+          amount: 0.3,
+          from: "edges", // Stagger from edges toward center
+        },
+        ease: "cubic.out",
       });
 
       // Background gradient shift
@@ -134,26 +153,28 @@ export default function SuperpowerPage() {
       gsap.from(".flip-card", {
         scrollTrigger: {
           trigger: ".showcase-section",
-          start: "top 70%",
-          end: "top 30%",
+          start: "top 75%",
+          end: "top 35%",
           scrub: 1,
         },
         rotationY: 180,
         opacity: 0,
         stagger: 0.1,
+        ease: "cubic.out",
       });
 
-      // Scale up sections
+      // Scale up sections with earlier timing
       gsap.utils.toArray<HTMLElement>(".scale-section").forEach((section) => {
         gsap.from(section, {
           scrollTrigger: {
             trigger: section,
-            start: "top 80%",
-            end: "top 40%",
+            start: "top 85%",
+            end: "top 45%",
             scrub: 1,
           },
-          scale: 0.9,
-          opacity: 0.5,
+          scale: 0.95,
+          opacity: 0.7,
+          ease: "cubic.out",
         });
       });
 
@@ -172,6 +193,58 @@ export default function SuperpowerPage() {
           ease: "none",
         });
       }
+
+      // NEW: Video background section with multi-layer parallax text
+      gsap.from(".video-bg-text-layer-1", {
+        scrollTrigger: {
+          trigger: ".video-bg-section",
+          start: "top 80%",
+          end: "top 30%",
+          scrub: 1,
+        },
+        y: 150,
+        opacity: 0,
+        scale: 0.8,
+        ease: "cubic.out",
+      });
+
+      gsap.from(".video-bg-text-layer-2", {
+        scrollTrigger: {
+          trigger: ".video-bg-section",
+          start: "top 75%",
+          end: "top 25%",
+          scrub: 1,
+        },
+        y: 100,
+        opacity: 0,
+        ease: "cubic.out",
+      });
+
+      gsap.from(".video-bg-cta", {
+        scrollTrigger: {
+          trigger: ".video-bg-section",
+          start: "top 70%",
+          end: "top 20%",
+          scrub: 1,
+        },
+        y: 80,
+        opacity: 0,
+        scale: 0.9,
+        ease: "cubic.out",
+      });
+
+      // Parallax movement on video background
+      gsap.to(".parallax-video", {
+        scrollTrigger: {
+          trigger: ".video-bg-section",
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.5,
+        },
+        scale: 1.15,
+        y: -80,
+        ease: "none",
+      });
     }, mainRef);
 
     return () => ctx.revert();
@@ -240,8 +313,8 @@ export default function SuperpowerPage() {
           </div>
         </section>
 
-        {/* Stats Section with Counter */}
-        <section className="stats-section scale-section min-h-screen flex items-center justify-center py-20 px-6 relative">
+        {/* Stats Section with Counter - SPACING FIXED */}
+        <section className="stats-section scale-section py-20 md:py-32 flex items-center justify-center px-6 relative">
           <div className="absolute inset-0 bg-gradient-to-b from-black via-orange-900/10 to-black"></div>
           <div className="relative z-10 text-center max-w-4xl mx-auto">
             <h2 className="reveal-text text-5xl md:text-7xl font-bold mb-8">
@@ -251,7 +324,7 @@ export default function SuperpowerPage() {
               Real data from real members
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="feature-card p-8 bg-gradient-to-br from-orange-600/10 to-red-600/10 rounded-2xl border border-orange-500/20 backdrop-blur-sm">
+              <div className="feature-card p-8 bg-gradient-to-br from-orange-600/10 to-red-600/10 rounded-2xl border border-orange-500/20 backdrop-blur-lg">
                 <div
                   ref={counterRef}
                   className="text-6xl font-bold text-orange-500 mb-4"
@@ -262,11 +335,11 @@ export default function SuperpowerPage() {
                   of members find early risk factors for diabetes
                 </p>
               </div>
-              <div className="feature-card p-8 bg-gradient-to-br from-red-600/10 to-pink-600/10 rounded-2xl border border-red-500/20 backdrop-blur-sm">
+              <div className="feature-card p-8 bg-gradient-to-br from-red-600/10 to-pink-600/10 rounded-2xl border border-red-500/20 backdrop-blur-lg">
                 <div className="text-6xl font-bold text-red-500 mb-4">2.5M+</div>
                 <p className="text-gray-300">active members worldwide</p>
               </div>
-              <div className="feature-card p-8 bg-gradient-to-br from-pink-600/10 to-purple-600/10 rounded-2xl border border-pink-500/20 backdrop-blur-sm">
+              <div className="feature-card p-8 bg-gradient-to-br from-pink-600/10 to-purple-600/10 rounded-2xl border border-pink-500/20 backdrop-blur-lg">
                 <div className="text-6xl font-bold text-pink-500 mb-4">24/7</div>
                 <p className="text-gray-300">AI-powered health monitoring</p>
               </div>
@@ -274,15 +347,15 @@ export default function SuperpowerPage() {
           </div>
         </section>
 
-        {/* Features Section */}
-        <section className="features-section scale-section min-h-screen flex items-center justify-center py-20 px-6 relative">
+        {/* Features Section - SPACING FIXED */}
+        <section className="features-section scale-section py-20 md:py-32 flex items-center justify-center px-6 relative">
           <div className="absolute inset-0 bg-gradient-to-b from-black via-red-900/10 to-black"></div>
           <div className="relative z-10 max-w-6xl mx-auto">
             <h2 className="reveal-text text-5xl md:text-7xl font-bold mb-16 text-center">
               AI-Powered Health Intelligence
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="feature-card p-10 bg-gradient-to-br from-orange-600/20 to-red-600/20 rounded-3xl border border-orange-500/30 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
+              <div className="feature-card p-10 bg-gradient-to-br from-orange-600/20 to-red-600/20 rounded-3xl border border-orange-500/30 backdrop-blur-lg hover:scale-105 transition-transform duration-300">
                 <div className="w-16 h-16 bg-orange-500 rounded-2xl mb-6 flex items-center justify-center">
                   <svg
                     className="w-10 h-10 text-white"
@@ -304,7 +377,7 @@ export default function SuperpowerPage() {
                   and provides personalized insights.
                 </p>
               </div>
-              <div className="feature-card p-10 bg-gradient-to-br from-red-600/20 to-pink-600/20 rounded-3xl border border-red-500/30 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
+              <div className="feature-card p-10 bg-gradient-to-br from-red-600/20 to-pink-600/20 rounded-3xl border border-red-500/30 backdrop-blur-lg hover:scale-105 transition-transform duration-300">
                 <div className="w-16 h-16 bg-red-500 rounded-2xl mb-6 flex items-center justify-center">
                   <svg
                     className="w-10 h-10 text-white"
@@ -326,7 +399,7 @@ export default function SuperpowerPage() {
                   data streams.
                 </p>
               </div>
-              <div className="feature-card p-10 bg-gradient-to-br from-pink-600/20 to-purple-600/20 rounded-3xl border border-pink-500/30 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
+              <div className="feature-card p-10 bg-gradient-to-br from-pink-600/20 to-purple-600/20 rounded-3xl border border-pink-500/30 backdrop-blur-lg hover:scale-105 transition-transform duration-300">
                 <div className="w-16 h-16 bg-pink-500 rounded-2xl mb-6 flex items-center justify-center">
                   <svg
                     className="w-10 h-10 text-white"
@@ -348,7 +421,7 @@ export default function SuperpowerPage() {
                   keeping you ahead.
                 </p>
               </div>
-              <div className="feature-card p-10 bg-gradient-to-br from-purple-600/20 to-blue-600/20 rounded-3xl border border-purple-500/30 backdrop-blur-sm hover:scale-105 transition-transform duration-300">
+              <div className="feature-card p-10 bg-gradient-to-br from-purple-600/20 to-blue-600/20 rounded-3xl border border-purple-500/30 backdrop-blur-lg hover:scale-105 transition-transform duration-300">
                 <div className="w-16 h-16 bg-purple-500 rounded-2xl mb-6 flex items-center justify-center">
                   <svg
                     className="w-10 h-10 text-white"
@@ -374,8 +447,50 @@ export default function SuperpowerPage() {
           </div>
         </section>
 
-        {/* Video Section with Masking */}
-        <section className="video-section scale-section min-h-screen flex items-center justify-center py-20 px-6 relative">
+        {/* NEW: Video Background Section with Animated Text Overlay */}
+        <section className="video-bg-section relative py-32 md:py-40 flex items-center justify-center overflow-hidden">
+          {/* Video Background with Parallax */}
+          <video
+            className="parallax-video absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+          >
+            <source
+              src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+              type="video/mp4"
+            />
+          </video>
+
+          {/* Dark Tint Overlay - 70% opacity for readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-orange-900/60"></div>
+
+          {/* Animated Text Content */}
+          <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+            {/* Layer 1 - Main Heading */}
+            <h2 className="video-bg-text-layer-1 text-5xl md:text-7xl lg:text-8xl font-bold mb-8 bg-gradient-to-r from-orange-400 via-red-400 to-pink-400 bg-clip-text text-transparent leading-tight">
+              Your Health, Visualized
+            </h2>
+
+            {/* Layer 2 - Subtitle */}
+            <p className="video-bg-text-layer-2 text-2xl md:text-3xl text-white mb-12 font-light max-w-3xl mx-auto drop-shadow-2xl">
+              Experience comprehensive health tracking with stunning visual insights that make complex data simple
+            </p>
+
+            {/* Layer 3 - CTA */}
+            <button className="video-bg-cta px-12 py-6 bg-gradient-to-r from-orange-600 to-red-600 rounded-full text-xl md:text-2xl font-bold hover:scale-110 transition-all duration-300 shadow-2xl hover:shadow-orange-500/50">
+              See It In Action
+            </button>
+          </div>
+
+          {/* Decorative Elements */}
+          <div className="absolute top-10 right-10 w-32 h-32 bg-orange-500/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 left-10 w-40 h-40 bg-red-500/20 rounded-full blur-3xl"></div>
+        </section>
+
+        {/* Video Section with Masking - SPACING FIXED */}
+        <section className="video-section scale-section py-20 md:py-32 flex items-center justify-center px-6 relative">
           <div className="absolute inset-0 bg-gradient-to-b from-black via-purple-900/10 to-black"></div>
           <div className="relative z-10 max-w-5xl mx-auto text-center">
             <h2 className="reveal-text text-5xl md:text-7xl font-bold mb-16">
@@ -422,7 +537,7 @@ export default function SuperpowerPage() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="min-w-[400px] h-[500px] bg-gradient-to-br from-orange-600/20 to-red-600/20 rounded-3xl border border-orange-500/30 backdrop-blur-sm p-10 flex items-center justify-center"
+                className="min-w-[400px] h-[500px] bg-gradient-to-br from-orange-600/20 to-red-600/20 rounded-3xl border border-orange-500/30 backdrop-blur-lg p-10 flex items-center justify-center"
               >
                 <h3 className="text-4xl font-bold text-center">{item}</h3>
               </div>
@@ -430,15 +545,15 @@ export default function SuperpowerPage() {
           </div>
         </section>
 
-        {/* Premium Cards Section */}
-        <section className="premium-section scale-section min-h-screen flex items-center justify-center py-20 px-6 relative">
+        {/* Premium Cards Section - SPACING FIXED + CONVERGENCE ANIMATION */}
+        <section className="premium-section scale-section py-20 md:py-32 flex items-center justify-center px-6 relative">
           <div className="absolute inset-0 bg-gradient-to-b from-black via-blue-900/10 to-black"></div>
           <div className="relative z-10 max-w-6xl mx-auto">
             <h2 className="reveal-text text-5xl md:text-7xl font-bold mb-16 text-center">
               Choose Your Plan
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="premium-card p-8 bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-3xl border border-gray-600/30 backdrop-blur-sm">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8" style={{ transformStyle: "preserve-3d" }}>
+              <div className="premium-card p-8 bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-3xl border border-gray-600/30 backdrop-blur-lg">
                 <h3 className="text-3xl font-bold mb-4">Essential</h3>
                 <p className="text-5xl font-bold mb-6 text-orange-500">$29/mo</p>
                 <ul className="space-y-3 text-gray-300">
@@ -486,7 +601,7 @@ export default function SuperpowerPage() {
                   </li>
                 </ul>
               </div>
-              <div className="premium-card p-8 bg-gradient-to-br from-orange-600/30 to-red-600/30 rounded-3xl border-2 border-orange-500 backdrop-blur-sm transform scale-105 shadow-2xl shadow-orange-500/20">
+              <div className="premium-card p-8 bg-gradient-to-br from-orange-600/30 to-red-600/30 rounded-3xl border-2 border-orange-500 backdrop-blur-lg transform scale-105 shadow-2xl shadow-orange-500/20">
                 <div className="bg-orange-500 text-black text-sm font-bold px-3 py-1 rounded-full inline-block mb-4">
                   MOST POPULAR
                 </div>
@@ -551,7 +666,7 @@ export default function SuperpowerPage() {
                   </li>
                 </ul>
               </div>
-              <div className="premium-card p-8 bg-gradient-to-br from-purple-800/50 to-blue-900/50 rounded-3xl border border-purple-600/30 backdrop-blur-sm">
+              <div className="premium-card p-8 bg-gradient-to-br from-purple-800/50 to-blue-900/50 rounded-3xl border border-purple-600/30 backdrop-blur-lg">
                 <h3 className="text-3xl font-bold mb-4">Enterprise</h3>
                 <p className="text-5xl font-bold mb-6 text-purple-500">Custom</p>
                 <ul className="space-y-3 text-gray-300">
@@ -617,8 +732,8 @@ export default function SuperpowerPage() {
           </div>
         </section>
 
-        {/* Showcase Section with Flip Cards */}
-        <section className="showcase-section gradient-section scale-section min-h-screen flex items-center justify-center py-20 px-6 relative">
+        {/* Showcase Section with Flip Cards - SPACING FIXED */}
+        <section className="showcase-section gradient-section scale-section py-20 md:py-32 flex items-center justify-center px-6 relative">
           <div
             className="gradient-bg absolute inset-0 bg-gradient-to-br from-orange-900/20 via-red-900/20 to-purple-900/20"
             style={{ backgroundSize: "200% 200%", backgroundPosition: "0% 0%" }}
@@ -631,7 +746,7 @@ export default function SuperpowerPage() {
               {[...Array(8)].map((_, i) => (
                 <div
                   key={i}
-                  className="flip-card aspect-square bg-gradient-to-br from-orange-600/20 to-red-600/20 rounded-2xl border border-orange-500/30 backdrop-blur-sm flex items-center justify-center"
+                  className="flip-card aspect-square bg-gradient-to-br from-orange-600/20 to-red-600/20 rounded-2xl border border-orange-500/30 backdrop-blur-lg flex items-center justify-center"
                   style={{ transformStyle: "preserve-3d" }}
                 >
                   <div className="text-6xl">⭐</div>
