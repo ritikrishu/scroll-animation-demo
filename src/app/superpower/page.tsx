@@ -115,32 +115,30 @@ export default function SuperpowerPage() {
       gsap.from(premiumCards, {
         scrollTrigger: {
           trigger: ".premium-section",
-          start: "top 90%",    // Extended range for more scroll control
-          end: "top 10%",      // User gets 80% viewport height to control
-          scrub: 0.5,          // Tighter scroll coupling (was 1)
-          pin: true,           // Pin section during convergence
-          anticipatePin: 1,    // Smooth pin transition
+          start: "top 80%",    // More conservative (was 90%)
+          end: "top 20%",      // More conservative (was 10%)
+          scrub: 0.5,          // Keep tighter scroll coupling
         },
         x: (i) => {
-          // Magnetic convergence from farther distances
-          if (i === 0) return -800; // Left card from far left (was -600)
-          if (i === 2) return 800;  // Right card from far right (was 600)
+          // Moderate convergence distances
+          if (i === 0) return -700; // Left card (was -800)
+          if (i === 2) return 700;  // Right card (was 800)
           return 0; // Center card drops from above
         },
-        y: (i) => (i === 1 ? -600 : 0), // Center drops from higher (was -400)
-        opacity: 0.2,        // Visible ghost images (was 0)
+        y: (i) => (i === 1 ? -500 : 0), // Center drops (was -600)
+        opacity: 0,          // Invisible start (was 0.2)
         rotationY: (i) => {
-          // More dramatic 3D rotation
-          if (i === 0) return -120; // Left card rotates in (was -90)
-          if (i === 2) return 120;  // Right card rotates in (was 90)
+          // Moderate 3D rotation
+          if (i === 0) return -100; // Left card (was -120)
+          if (i === 2) return 100;  // Right card (was 120)
           return 0;
         },
-        scale: 0.3,          // Smaller initial state (was 0.5)
+        scale: 0.6,          // Visible starting size (was 0.3)
         stagger: {
           amount: 0.3,
           from: "edges",     // Stagger from edges toward center
         },
-        ease: "expo.inOut",  // Magnetic acceleration effect (was cubic.out)
+        ease: "expo.inOut",  // Keep magnetic acceleration
       });
 
       // Layer 2: Blur effect - clears as cards converge (disabled on mobile)
@@ -150,8 +148,8 @@ export default function SuperpowerPage() {
         gsap.from(premiumCards, {
           scrollTrigger: {
             trigger: ".premium-section",
-            start: "top 90%",
-            end: "top 10%",
+            start: "top 80%",  // Match Layer 1 (was 90%)
+            end: "top 20%",    // Match Layer 1 (was 10%)
             scrub: 0.5,
           },
           filter: "blur(30px)",
@@ -164,8 +162,8 @@ export default function SuperpowerPage() {
         const glowTimeline = gsap.timeline({
           scrollTrigger: {
             trigger: ".premium-section",
-            start: "top 90%",
-            end: "top 10%",
+            start: "top 80%",  // Match Layer 1 (was 90%)
+            end: "top 20%",    // Match Layer 1 (was 10%)
             scrub: 0.5,
           },
         });
@@ -193,8 +191,8 @@ export default function SuperpowerPage() {
       gsap.from(premiumCards, {
         scrollTrigger: {
           trigger: ".premium-section",
-          start: "top 15%",  // Near end of convergence
-          end: "top 10%",
+          start: "top 25%",  // Near end (was 15%)
+          end: "top 20%",    // Match Layer 1 end (was 10%)
           scrub: 0.3,
         },
         scale: 1.02,
